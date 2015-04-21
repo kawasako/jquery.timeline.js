@@ -35,9 +35,12 @@ $(function(){
     .to({
       top: 200
     }, { duration: 1000 })
+    .wait(1000)
     .to({
       left: 200
-    }, { duration: 1000 });
+    }, { duration: 1000 })
+  t1.bind('#box-1, #box-2')
+    .remove();
 
   $('#start').click(function(){ t1.run(); });
   $('#destroy').click(function(){ t1.destroy(); });
