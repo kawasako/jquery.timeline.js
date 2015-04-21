@@ -16,17 +16,21 @@
     };
   };
   // Base
-  Timeline.prototype.run = function(){
-    this.state = 'running';
+  Timeline.prototype.run = function(fn){
     var _this = this;
     var task;
     var process = _this.process();
+    _this.state = 'running';
+    // callback
+    if (typeof fn == 'function') { _this.call(fn); }
+    // task runner
     for (var i=0; i<_this.tasks.length; i++) {
       task = _this.tasks[i];
       if(task.type in _this.methods) {
         process = _this.methods[task.type](_this, process, task);
       }
     };
+    return this;
   };
   Timeline.prototype.createTask = function(type, params, opt) {
     return {
@@ -62,12 +66,25 @@
     this.tasks.push(task);
     return this;
   };
+  Timeline.prototype.call = function(fn, opt){
+    if (typeof opt == 'undefined') { var opt = {} }
+    var task = this.createTask('callFunction', fn, opt);
+    this.tasks.push(task);
+    return this;
+  };
   Timeline.prototype.destroy = function(){
     for(key in this.$nodes) {
       this.$nodes[key].stop();
     }
     this.tasks = [];
     this.state = 'terminating';
+  };
+  Timeline.prototype.include = function(tl, opt){
+    if (typeof opt == 'undefined') { var opt = {} }
+    var fn = function(done) { tl.run(done); }
+    var task = this.createTask('callFunction', fn, opt);
+    this.tasks.push(task);
+    return this;
   };
   Timeline.prototype.done = function(d){
     if(this.state == 'terminating') {
@@ -114,6 +131,15 @@
         setTimeout(function(){
           _this.done(d);
         }, task.params);
+        return d.promise();
+      });
+    },
+    callFunction: function(_this, process, task){
+      return process.then(function() {
+        var d = new $.Deferred;
+        task.opt.async = task.opt.async ? task.opt.async : false;
+        if(task.opt.async) { task.params( function() {} ); _this.done(d); }
+        else { task.params( function(){ _this.done(d); } ); }
         return d.promise();
       });
     },

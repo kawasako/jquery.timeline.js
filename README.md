@@ -36,12 +36,12 @@ var t = new $.Timeline;
 ```
 
 ## Running timeline
-タイムラインを実行するには`.run`メソッドを実行します。全ての定義されたタスクは`.run`が発火するまで実行されることはありません。
+タイムラインを実行するには`.run`メソッドを実行します。全ての定義されたタスクは`.run`が発火するまで実行されることはありません。`.run`はコールバック関数を受け取ることが出来ます。
 ```javascript
 var t = new $.Timeline;
 t.bind('.hoge')
   .to({ marginTop: 100 }, { duration: 1000 });
-t.run();
+t.run( function(){ console.log('complete') } );
 ```
 
 ## Destroy timeline
@@ -114,6 +114,19 @@ t.bind('.hoge')
 t.run();
 ```
 
+## Set call function
+`.call`は渡された関数を実行します。第一引数に渡されるdone関数を実行することで、任意のタイミングで次のタスクを実行することができます。
+```javascript
+var t = new $.Timeline;
+t.bind('.hoge')
+  .wait(1000)
+  .call(function(done) {
+    console.log('complete');
+    done();
+  });
+t.run();
+```
+
 ## Set remove
 `.remove`はbindされたエレメントをドキュメントから除外する際に利用します。
 ```javascript
@@ -135,8 +148,41 @@ t.bind('.hoge')
 t.run();
 ```
 
+## Include timeline
+`.include`は別で定義されたタイムラインを呼び出します。
+```javascript
+var t1 = new $.Timeline;
+var t2 = new $.Timeline;
+var t3 = new $.Timeline;
+
+t2.bind('.hoge')
+  .set({
+      position: 'absolute',
+      top: 0,
+      left: 0
+  })
+  .to({
+    top: 200
+  }, { duration: 200, easing: 'linear' });
+
+t3.bind('.fuga')
+  .set({
+      position: 'absolute',
+      top: 0,
+      left: 0
+  })
+  .to({
+    left: 200
+  }, { duration: 200, easing: 'linear' });
+
+t1.wait(1000)
+  .include(t2)
+  .include(t3);
+t1.run();
+```
+
 ## 非同期処理
-`.to`では、オプションに`async: true`を渡すことで実行の完了を待たずに次の処理を行うことが可能です。例えば、タイムラインが2つ以上操作に分岐する場合に利用します。
+`.to`, `.call`, `.include`では、オプションに`async: true`を渡すことで実行の完了を待たずに次の処理を行うことが可能です。例えば、タイムラインが2つ以上の操作に分岐する場合に利用します。
 ```javascript
 t.bind('.hoge')
   .to({
