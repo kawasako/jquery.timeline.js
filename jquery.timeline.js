@@ -1,3 +1,11 @@
+/* !
+ * jquery.timeline.js
+ * https://github.com/kawasako/jquery.timeline.js
+ *
+ * Copyright (c) 2015 Kohei Kawasaki
+ * Licensed under the MIT license: http://www.opensource.org/licenses/MIT
+ */
+
 (function(){
   // Main Proccess
   function main() {
