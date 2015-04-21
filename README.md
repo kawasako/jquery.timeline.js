@@ -1,6 +1,9 @@
 # jquery.timeline.js
 jQueryオブジェクトのスタイルを順々に操作する記法を提供するライブラリです。実行のハンドリングにはjQuery.Deferredを使用します。開発時のjQueryのバージョンは1.11.2です。
 
+demo:
+http://rrlrlrll.org/jquery.timeline.js/
+
 ## Browser
 - Internet Explorer 8+
 - Safari 6+
