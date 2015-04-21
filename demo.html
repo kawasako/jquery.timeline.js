@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>jquery.timeline.js - demo</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="jquery.timeline.js"></script>
+<script>
+$(function(){
+  var t1 = new $.Timeline;
+  t1.bind('#box-1')
+    .set({
+      top: 0,
+      left: 0
+    })
+  t1.bind('#box-2')
+    .set({
+      top: 0,
+      left: 0
+    })
+  t1.bind('#box-1')
+    .to({
+      top: 200,
+    }, { duration: 1000 })
+    .to({
+      left: 200
+    }, { duration: 1000 })
+    .to({
+      top: 0
+    }, { duration: 1000, async: true })
+  t1.bind('#box-2')
+    .to({
+      left: 100,
+    }, { duration: 1000 })
+    .to({
+      top: 200
+    }, { duration: 1000 })
+    .to({
+      left: 200
+    }, { duration: 1000 });
+
+  $('#start').click(function(){ t1.run(); });
+  $('#destroy').click(function(){ t1.destroy(); });
+});
+</script>
+<style>
+* { margin: 0; padding: 0; }
+.stage { position: relative; width: 300px; height: 300px; }
+.box { width: 100px; height: 100px; position: absolute; opacity: 0.5;}
+#box-1 { background-color: red; }
+#box-2 { background-color: blue; }
+button { padding: 10px; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div id="box-1" class="box"></div>
+  <div id="box-2" class="box"></div>
+</div>
+<button id="start">start</button>
+<button id="destroy">destroy</button>
+</body>
+</html>
