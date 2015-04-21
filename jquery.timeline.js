@@ -7,6 +7,7 @@
   var Timeline = function() {
     this.tasks = [];
     this.state = 'waiting';
+    this.childlines = [];
     this.$nodes = {};
     this.$target = null;
     this.process = function(){
@@ -73,13 +74,13 @@
     return this;
   };
   Timeline.prototype.destroy = function(){
-    for(key in this.$nodes) {
-      this.$nodes[key].stop();
-    }
+    for(key in this.$nodes) { this.$nodes[key].stop(); }
+    for(var i=0; i<this.childlines.length; i++) { this.childlines[i].destroy(); }
     this.tasks = [];
     this.state = 'terminating';
   };
   Timeline.prototype.include = function(tl, opt){
+    this.childlines.push(tl);
     if (typeof opt == 'undefined') { var opt = {} }
     var fn = function(done) { tl.run(done); }
     var task = this.createTask('callFunction', fn, opt);
